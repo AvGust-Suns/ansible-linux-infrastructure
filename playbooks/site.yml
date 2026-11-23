@@ -1,0 +1,42 @@
+---
+- name: Configure all managed servers
+  hosts: managed_nodes
+  become: true
+  gather_facts: true
+
+  roles:
+    - common
+
+
+- name: Configure web servers
+  hosts: web_servers
+  become: true
+  gather_facts: true
+
+  roles:
+    - nginx
+
+
+- name: Configure Docker hosts
+  hosts: docker_hosts
+  become: true
+  gather_facts: true
+
+  roles:
+    - docker
+
+- name: Harden SSH configuration
+  hosts: managed_nodes
+  become: true
+  gather_facts: false
+
+  roles:
+    - ssh_hardening
+
+- name: Configure firewall on managed servers
+  hosts: managed_nodes
+  become: true
+  gather_facts: false
+
+  roles:
+    - firewall

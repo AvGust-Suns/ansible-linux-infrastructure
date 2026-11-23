@@ -1,0 +1,27 @@
+---
+- name: Update APT package cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Upgrade installed packages
+  ansible.builtin.apt:
+    upgrade: safe
+
+- name: Install common utilities
+  ansible.builtin.apt:
+    name:
+      - curl
+      - wget
+      - git
+      - vim
+      - htop
+      - ca-certificates
+      - sudo
+    state: present
+
+- name: Ensure SSH service is enabled
+  ansible.builtin.service:
+    name: ssh
+    state: started
+    enabled: true
