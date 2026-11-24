@@ -40,3 +40,9 @@
 
   roles:
     - firewall
+
+- name: Manage infrastructure user accounts
+  hosts: managed_nodes
+  become: true
+  roles:
+    - users

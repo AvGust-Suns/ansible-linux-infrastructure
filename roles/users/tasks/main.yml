@@ -1,0 +1,43 @@
+---
+- name: Ensure managed groups exist
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ users_groups }}"
+
+- name: Ensure sudo administration group exists
+  ansible.builtin.group:
+    name: "{{ users_sudo_group }}"
+    state: present
+
+- name: Manage user accounts
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups | default([]) | join(',') }}"
+    append: true
+    shell: "{{ item.shell | default('/bin/bash') }}"
+    create_home: true
+    state: "{{ item.state | default('present') }}"
+  loop: "{{ users_accounts }}"
+
+- name: Install SSH authorized keys
+  ansible.posix.authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ item.ssh_key }}"
+    state: present
+    manage_dir: true
+  loop: "{{ users_accounts }}"
+  when:
+    - item.state | default('present') == 'present'
+    - item.ssh_key is defined
+    - item.ssh_key | length > 0
+
+- name: Deploy sudoers configuration for infrastructure administrators
+  ansible.builtin.copy:
+    dest: "{{ users_sudoers_file }}"
+    content: |
+      %{{ users_sudo_group }} ALL=(ALL:ALL) NOPASSWD: ALL
+    owner: root
+    group: root
+    mode: '0440'
+    validate: 'visudo -cf %s'

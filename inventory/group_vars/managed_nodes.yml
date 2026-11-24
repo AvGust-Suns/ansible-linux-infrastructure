@@ -1,4 +1,18 @@
 ---
 ansible_user: ansible
-
 ssh_port: 22
+
+users_groups:
+  - infra_admins
+  - developers
+
+users_sudo_group: infra_admins
+
+users_accounts:
+  - name: opsadmin
+    groups:
+      - infra_admins
+      - developers
+    shell: /bin/bash
+    state: present
+    ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAZtvsi8agEKUhNKKLrklAhyuwrSlJ+K4uhtxX/acyUP opsadmin@ansible-control"

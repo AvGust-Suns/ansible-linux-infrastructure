@@ -1,0 +1,7 @@
+---
+users_groups: []
+
+users_accounts: []
+
+users_sudo_group: infra_admins
+users_sudoers_file: /etc/sudoers.d/ansible-infra-admins
