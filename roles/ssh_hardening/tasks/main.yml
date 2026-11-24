@@ -6,10 +6,10 @@
     group: root
     mode: '0644'
     content: |
-      PermitRootLogin no
-      PasswordAuthentication no
-      PubkeyAuthentication yes
-      KbdInteractiveAuthentication no
+      PermitRootLogin {{ ssh_hardening_permit_root_login }}
+      PasswordAuthentication {{ ssh_hardening_password_authentication }}
+      PubkeyAuthentication {{ ssh_hardening_pubkey_authentication }}
+      KbdInteractiveAuthentication {{ ssh_hardening_kbd_interactive_authentication }}
   notify: Restart SSH
 
 - name: Validate SSH configuration
