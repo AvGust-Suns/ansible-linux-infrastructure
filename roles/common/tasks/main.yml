@@ -10,15 +10,12 @@
 
 - name: Install common utilities
   ansible.builtin.apt:
-    name:
-      - curl
-      - wget
-      - git
-      - vim
-      - htop
-      - ca-certificates
-      - sudo
+    name: "{{ common_packages }}"
     state: present
+
+- name: Set system timezone
+  community.general.timezone:
+    name: "{{ common_timezone }}"
 
 - name: Ensure SSH service is enabled
   ansible.builtin.service:

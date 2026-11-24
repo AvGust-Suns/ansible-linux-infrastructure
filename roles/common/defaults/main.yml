@@ -1,0 +1,10 @@
+---
+common_timezone: "{{ timezone }}"
+common_packages:
+  - curl
+  - wget
+  - git
+  - vim
+  - htop
+  - ca-certificates
+  - sudo

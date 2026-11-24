@@ -1,0 +1,13 @@
+---
+timezone: Europe/Moscow
+
+ansible_python_interpreter: /usr/bin/python3
+
+common_packages:
+  - curl
+  - wget
+  - git
+  - vim
+  - htop
+  - ca-certificates
+  - sudo

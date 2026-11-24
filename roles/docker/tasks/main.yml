@@ -1,13 +1,11 @@
 ---
 - name: Install Docker packages
   ansible.builtin.apt:
-    name:
-      - docker.io
-      - docker-compose
+    name: "{{ docker_packages }}"
     state: present
 
 - name: Ensure Docker service is enabled and running
   ansible.builtin.service:
-    name: docker
+    name: "{{ docker_service }}"
     state: started
     enabled: true

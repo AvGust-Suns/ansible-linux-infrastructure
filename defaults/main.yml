@@ -1,0 +1,5 @@
+---
+nginx_package: nginx
+nginx_service: nginx
+nginx_document_root: /var/www/html
+nginx_http_port: 80
