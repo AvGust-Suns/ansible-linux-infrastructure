@@ -1,0 +1,10 @@
+---
+security_updates_package: unattended-upgrades
+
+security_updates_config_path: /etc/apt/apt.conf.d/20auto-upgrades
+
+security_updates_update_interval: 1
+security_updates_upgrade_interval: 1
+security_updates_autoclean_interval: 7
+
+security_updates_automatic_reboot: false

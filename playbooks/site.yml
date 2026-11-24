@@ -7,6 +7,7 @@
   roles:
     - common
     - time_sync
+    - security_updates
 
 - name: Configure web servers
   hosts: web_servers
