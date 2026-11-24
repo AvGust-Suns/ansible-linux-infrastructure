@@ -46,3 +46,21 @@
   become: true
   roles:
     - users
+
+- name: Deploy Node Exporter on managed servers
+  hosts: managed_nodes
+  become: true
+  roles:
+    - node_exporter
+
+- name: Deploy Prometheus monitoring server
+  hosts: infrastructure
+  become: true
+  roles:
+    - prometheus
+
+- name: Deploy Grafana monitoring dashboard
+  hosts: infrastructure
+  become: true
+  roles:
+    - grafana

@@ -1,0 +1,21 @@
+---
+- name: Install Prometheus Node Exporter
+  ansible.builtin.apt:
+    name: "{{ node_exporter_package }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Ensure Node Exporter is enabled and running
+  ansible.builtin.service:
+    name: "{{ node_exporter_service }}"
+    state: started
+    enabled: true
+
+- name: Check Node Exporter metrics endpoint
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ node_exporter_port }}/metrics"
+    method: GET
+    status_code: 200
+  register: node_exporter_metrics
+  changed_when: false

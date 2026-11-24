@@ -1,0 +1,6 @@
+---
+- name: Configure Grafana monitoring
+  hosts: infrastructure
+  become: true
+  roles:
+    - grafana

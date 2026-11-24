@@ -1,0 +1,13 @@
+---
+prometheus_package: prometheus
+prometheus_service: prometheus
+prometheus_config_path: /etc/prometheus/prometheus.yml
+prometheus_defaults_path: /etc/default/prometheus
+prometheus_web_listen_address: 127.0.0.1:9090
+
+prometheus_scrape_interval: 15s
+
+prometheus_node_targets:
+  - 192.168.56.13:9100
+  - 192.168.56.14:9100
+  - 192.168.56.15:9100

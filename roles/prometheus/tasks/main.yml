@@ -1,0 +1,32 @@
+---
+- name: Install Prometheus
+  ansible.builtin.apt:
+    name: "{{ prometheus_package }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Configure Prometheus web listener
+  ansible.builtin.copy:
+    dest: "{{ prometheus_defaults_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      ARGS="--web.listen-address={{ prometheus_web_listen_address }}"
+  notify: Restart Prometheus
+
+- name: Deploy Prometheus configuration
+  ansible.builtin.template:
+    src: prometheus.yml.j2
+    dest: "{{ prometheus_config_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Prometheus
+
+- name: Ensure Prometheus is enabled and running
+  ansible.builtin.service:
+    name: "{{ prometheus_service }}"
+    state: started
+    enabled: true

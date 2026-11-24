@@ -1,0 +1,7 @@
+---
+grafana_package: grafana
+grafana_service: grafana-server
+grafana_port: 3000
+grafana_listen_address: 127.0.0.1
+grafana_config_path: /etc/grafana/grafana.ini
+grafana_prometheus_url: http://127.0.0.1:9090
