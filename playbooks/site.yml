@@ -6,7 +6,7 @@
 
   roles:
     - common
-
+    - time_sync
 
 - name: Configure web servers
   hosts: web_servers
@@ -15,7 +15,6 @@
 
   roles:
     - nginx
-
 
 - name: Configure Docker hosts
   hosts: docker_hosts

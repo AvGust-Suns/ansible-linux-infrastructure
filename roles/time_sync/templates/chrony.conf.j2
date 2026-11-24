@@ -1,0 +1,11 @@
+{% for server in time_sync_ntp_servers %}
+pool {{ server }}
+{% endfor %}
+
+driftfile {{ time_sync_driftfile }}
+
+makestep {{ time_sync_max_step }} {{ time_sync_max_step_updates }}
+
+rtcsync
+
+logdir {{ time_sync_log_directory }}

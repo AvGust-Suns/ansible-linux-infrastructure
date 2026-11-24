@@ -1,0 +1,28 @@
+---
+- name: Install Chrony
+  ansible.builtin.apt:
+    name: "{{ time_sync_package }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Deploy Chrony configuration
+  ansible.builtin.template:
+    src: chrony.conf.j2
+    dest: "{{ time_sync_config_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Chrony
+
+- name: Ensure Chrony service is enabled and running
+  ansible.builtin.service:
+    name: "{{ time_sync_service }}"
+    state: started
+    enabled: true
+
+- name: Validate Chrony service state
+  ansible.builtin.command:
+    cmd: chronyc tracking
+  register: time_sync_tracking
+  changed_when: false

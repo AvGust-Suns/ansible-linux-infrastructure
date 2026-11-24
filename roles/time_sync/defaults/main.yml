@@ -1,0 +1,12 @@
+---
+time_sync_package: chrony
+time_sync_service: chrony
+time_sync_config_path: /etc/chrony/chrony.conf
+
+time_sync_ntp_servers:
+  - "2.debian.pool.ntp.org iburst"
+
+time_sync_driftfile: /var/lib/chrony/chrony.drift
+time_sync_log_directory: /var/log/chrony
+time_sync_max_step: "1.0"
+time_sync_max_step_updates: 3
