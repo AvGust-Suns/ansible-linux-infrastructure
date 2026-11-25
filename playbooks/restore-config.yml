@@ -1,0 +1,42 @@
+---
+- name: Restore configuration file from backup
+  hosts: managed_nodes
+  become: true
+  gather_facts: false
+
+  vars:
+    backup_date: ""
+    backup_file: ""
+    restore_confirm: false
+    backup_root: "{{ playbook_dir }}/../backups"
+
+  tasks:
+    - name: Validate restore parameters
+      ansible.builtin.assert:
+        that:
+          - backup_date | length > 0
+          - backup_file | length > 0
+          - restore_confirm | bool
+        fail_msg: "Specify backup_date, backup_file and restore_confirm=true."
+
+    - name: Check backup file on controller
+      ansible.builtin.stat:
+        path: "{{ backup_root }}/{{ backup_date }}/{{ inventory_hostname }}/{{ backup_file }}"
+      delegate_to: localhost
+      become: false
+      register: restore_source
+
+    - name: Stop if backup file is missing
+      ansible.builtin.assert:
+        that:
+          - restore_source.stat.exists
+        fail_msg: "Backup file does not exist on controller."
+
+    - name: Restore configuration file
+      ansible.builtin.copy:
+        src: "{{ restore_source.stat.path }}"
+        dest: "/{{ backup_file }}"
+        owner: root
+        group: root
+        mode: preserve
+        backup: true

@@ -1,0 +1,52 @@
+---
+- name: Backup configuration files from managed nodes
+  hosts: managed_nodes
+  become: true
+  gather_facts: true
+
+  vars:
+    backup_root: "{{ playbook_dir }}/../backups/{{ ansible_date_time.date }}"
+
+    backup_paths:
+      - /etc/ssh/sshd_config
+      - /etc/ssh/sshd_config.d/00-ansible-hardening.conf
+      - /etc/ufw/ufw.conf
+      - /etc/default/ufw
+      - /etc/nginx/nginx.conf
+      - /etc/nginx/sites-available/default
+      - /etc/docker/daemon.json
+      - /etc/prometheus/prometheus.yml
+      - /etc/grafana/grafana.ini
+      - /etc/grafana/provisioning/datasources/prometheus.yml
+      - /etc/grafana/provisioning/dashboards/dashboards.yml
+
+  tasks:
+    - name: Create local backup directory
+      ansible.builtin.file:
+        path: "{{ backup_root }}"
+        state: directory
+        mode: '0700'
+      delegate_to: localhost
+      become: false
+      run_once: true
+
+    - name: Check which configuration files exist
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop: "{{ backup_paths }}"
+      register: backup_file_stats
+
+    - name: Fetch existing configuration files
+      ansible.builtin.fetch:
+        src: "{{ item.item }}"
+        dest: "{{ backup_root }}/"
+        flat: false
+      loop: "{{ backup_file_stats.results }}"
+      when: item.stat.exists
+
+    - name: Display backup location
+      ansible.builtin.debug:
+        msg: "Configuration backup stored in {{ backup_root }}"
+      run_once: true
+      delegate_to: localhost
+      become: false
