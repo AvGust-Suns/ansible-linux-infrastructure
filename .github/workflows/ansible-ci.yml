@@ -36,6 +36,8 @@ jobs:
         run: |
           ansible-playbook playbooks/site.yml --syntax-check
           ansible-playbook playbooks/bootstrap-user.yml --syntax-check
+          ansible-playbook playbooks/backup-configs.yml --syntax-check
+          ansible-playbook playbooks/restore-config.yml --syntax-check
 
       - name: Run Ansible Lint
         run: ansible-lint
