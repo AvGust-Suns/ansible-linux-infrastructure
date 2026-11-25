@@ -32,12 +32,13 @@ jobs:
       - name: Check YAML formatting
         run: yamllint .
 
-      - name: Check Ansible syntax
+      - name: Check playbook syntax
         run: |
-          ansible-playbook playbooks/site.yml --syntax-check
-          ansible-playbook playbooks/bootstrap-user.yml --syntax-check
-          ansible-playbook playbooks/backup-configs.yml --syntax-check
-          ansible-playbook playbooks/restore-config.yml --syntax-check
+          ansible-playbook --syntax-check playbooks/site.yml
+          ansible-playbook --syntax-check playbooks/bootstrap-user.yml
+          ansible-playbook --syntax-check playbooks/backup-configs.yml
+          ansible-playbook --syntax-check playbooks/restore-config.yml
+          ansible-playbook --syntax-check playbooks/schedule-backups.yml
 
       - name: Run Ansible Lint
         run: ansible-lint

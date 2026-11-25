@@ -1,0 +1,33 @@
+---
+- name: Configure daily configuration backups
+  hosts: localhost
+  connection: local
+  become: true
+  gather_facts: false
+
+  vars:
+    backup_project_dir: /opt/ansible-linux-automation
+    backup_playbook: /usr/bin/ansible-playbook
+    backup_log: /var/log/ansible-config-backup.log
+
+  tasks:
+    - name: Ensure backup log exists
+      ansible.builtin.copy:
+        content: ""
+        dest: "{{ backup_log }}"
+        force: false
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: Schedule daily configuration backup
+      ansible.builtin.cron:
+        name: Daily Ansible configuration backup
+        user: root
+        minute: "0"
+        hour: "2"
+        job: >-
+          cd {{ backup_project_dir }} &&
+          {{ backup_playbook }} playbooks/backup-configs.yml
+          >> {{ backup_log }} 2>&1
+        state: present

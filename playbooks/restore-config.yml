@@ -14,10 +14,12 @@
     - name: Validate restore parameters
       ansible.builtin.assert:
         that:
-          - backup_date | length > 0
+          - backup_date is match('^\d{4}-\d{2}-\d{2}$')
           - backup_file | length > 0
+          - not backup_file.startswith('/')
+          - "'..' not in backup_file.split('/')"
           - restore_confirm | bool
-        fail_msg: "Specify backup_date, backup_file and restore_confirm=true."
+        fail_msg: "Specify a valid backup_date, backup_file and restore_confirm=true."
 
     - name: Check backup file on controller
       ansible.builtin.stat:
@@ -30,7 +32,8 @@
       ansible.builtin.assert:
         that:
           - restore_source.stat.exists
-        fail_msg: "Backup file does not exist on controller."
+          - restore_source.stat.isreg
+        fail_msg: "Backup file does not exist or is not a regular file."
 
     - name: Restore configuration file
       ansible.builtin.copy:

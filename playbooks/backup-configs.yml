@@ -44,6 +44,59 @@
       loop: "{{ backup_file_stats.results }}"
       when: item.stat.exists
 
+    - name: Generate SHA-256 checksums for backup files
+      ansible.builtin.shell: |
+        set -euo pipefail
+        cd "{{ backup_root }}"
+        tmp_file="$(mktemp "${PWD}/.SHA256SUMS.XXXXXX")"
+        trap 'rm -f "$tmp_file"' EXIT
+
+        find . -type f ! -name SHA256SUMS ! -name '.SHA256SUMS.*' -print0 |
+          sort -z |
+          xargs -0 -r sha256sum > "$tmp_file"
+
+        if [[ -f SHA256SUMS ]] && cmp -s "$tmp_file" SHA256SUMS; then
+          exit 0
+        fi
+
+        mv "$tmp_file" SHA256SUMS
+        trap - EXIT
+        exit 10
+      args:
+        executable: /bin/bash
+      register: checksum_generation
+      changed_when: checksum_generation.rc == 10
+      failed_when: checksum_generation.rc not in [0, 10]
+      delegate_to: localhost
+      become: false
+      run_once: true
+
+    - name: Find dated backup directories
+      ansible.builtin.find:
+        paths: "{{ playbook_dir }}/../backups"
+        file_type: directory
+        recurse: false
+        use_regex: true
+        patterns:
+          - '^\d{4}-\d{2}-\d{2}$'
+      register: backup_directories
+      delegate_to: localhost
+      become: false
+      run_once: true
+
+    - name: Remove backup generations older than seven
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ backup_directories.files | sort(attribute='path', reverse=true) }}"
+      loop_control:
+        index_var: backup_index
+        label: "{{ item.path }}"
+      when: backup_index >= 7
+      delegate_to: localhost
+      become: false
+      run_once: true
+
     - name: Display backup location
       ansible.builtin.debug:
         msg: "Configuration backup stored in {{ backup_root }}"
