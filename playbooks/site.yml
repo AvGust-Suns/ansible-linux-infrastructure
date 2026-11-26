@@ -44,23 +44,41 @@
 - name: Manage infrastructure user accounts
   hosts: managed_nodes
   become: true
+
   roles:
     - users
 
 - name: Deploy Node Exporter on managed servers
   hosts: managed_nodes
   become: true
+
   roles:
     - node_exporter
+
+- name: Deploy Alertmanager
+  hosts: infrastructure
+  become: true
+
+  roles:
+    - alertmanager
+
+- name: Deploy Blackbox Exporter
+  hosts: infrastructure
+  become: true
+
+  roles:
+    - blackbox_exporter
 
 - name: Deploy Prometheus monitoring server
   hosts: infrastructure
   become: true
+
   roles:
     - prometheus
 
 - name: Deploy Grafana monitoring dashboard
   hosts: infrastructure
   become: true
+
   roles:
     - grafana

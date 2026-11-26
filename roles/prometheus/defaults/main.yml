@@ -11,3 +11,12 @@ prometheus_node_targets:
   - 192.168.56.13:9100
   - 192.168.56.14:9100
   - 192.168.56.15:9100
+
+prometheus_alertmanager_url: 127.0.0.1:9093
+
+prometheus_blackbox_exporter_target: 127.0.0.1:9115
+prometheus_blackbox_http_targets:
+  - http://192.168.56.13
+
+prometheus_rules_directory: /etc/prometheus/rules
+prometheus_rules_file: infrastructure-alerts.yml

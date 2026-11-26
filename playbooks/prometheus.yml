@@ -1,0 +1,8 @@
+---
+- name: Configure Prometheus monitoring and alerting
+  hosts: infrastructure
+  become: true
+  gather_facts: true
+
+  roles:
+    - prometheus

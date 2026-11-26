@@ -1,0 +1,66 @@
+---
+groups:
+  - name: infrastructure
+    rules:
+      - alert: HostDown
+        expr: up{job="linux_nodes"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Host {% raw %}{{ $labels.instance }}{% endraw %} is unavailable"
+          description: "Prometheus cannot scrape Node Exporter for more than 2 minutes."
+
+      - alert: HighCPUUsage
+        expr: |
+          100 * (1 - avg by (instance) (
+            rate(node_cpu_seconds_total{mode="idle"}[5m])
+          )) > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on {% raw %}{{ $labels.instance }}{% endraw %}"
+          description: "CPU usage has exceeded 85% for more than 5 minutes."
+
+      - alert: HighMemoryUsage
+        expr: |
+          100 * (
+            1 -
+            node_memory_MemAvailable_bytes /
+            node_memory_MemTotal_bytes
+          ) > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage on {% raw %}{{ $labels.instance }}{% endraw %}"
+          description: "Memory usage has exceeded 90% for more than 5 minutes."
+
+      - alert: LowDiskSpace
+        expr: |
+          (
+            node_filesystem_avail_bytes{
+              mountpoint="/",
+              fstype!~"tmpfs|overlay"
+            } /
+            node_filesystem_size_bytes{
+              mountpoint="/",
+              fstype!~"tmpfs|overlay"
+            }
+          ) * 100 < 10
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Low disk space on {% raw %}{{ $labels.instance }}{% endraw %}"
+          description: "Less than 10% disk space remains on the root filesystem."
+
+      - alert: NginxUnavailable
+        expr: probe_success{job="blackbox_http"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Nginx is unavailable on {% raw %}{{ $labels.instance }}{% endraw %}"
+          description: "Blackbox Exporter cannot successfully access the Nginx HTTP endpoint."

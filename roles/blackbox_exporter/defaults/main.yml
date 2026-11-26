@@ -1,0 +1,8 @@
+---
+blackbox_exporter_package: prometheus-blackbox-exporter
+blackbox_exporter_service: prometheus-blackbox-exporter
+
+blackbox_exporter_config_path: /etc/prometheus/blackbox.yml
+blackbox_exporter_defaults_path: /etc/default/prometheus-blackbox-exporter
+
+blackbox_exporter_web_listen_address: 127.0.0.1:9115

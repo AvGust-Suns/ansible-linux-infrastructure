@@ -3,6 +3,15 @@ global:
   scrape_interval: "{{ prometheus_scrape_interval }}"
   evaluation_interval: "{{ prometheus_scrape_interval }}"
 
+rule_files:
+  - "{{ prometheus_rules_directory }}/{{ prometheus_rules_file }}"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - "{{ prometheus_alertmanager_url }}"
+
 scrape_configs:
   - job_name: prometheus
     static_configs:
@@ -15,3 +24,23 @@ scrape_configs:
 {% for target in prometheus_node_targets %}
           - "{{ target }}"
 {% endfor %}
+
+  - job_name: blackbox_http
+    metrics_path: /probe
+    params:
+      module:
+        - http_2xx
+    static_configs:
+      - targets:
+{% for target in prometheus_blackbox_http_targets %}
+          - "{{ target }}"
+{% endfor %}
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+
+      - source_labels: [__param_target]
+        target_label: instance
+
+      - target_label: __address__
+        replacement: "{{ prometheus_blackbox_exporter_target }}"

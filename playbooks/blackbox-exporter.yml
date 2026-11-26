@@ -1,0 +1,8 @@
+---
+- name: Deploy Blackbox Exporter
+  hosts: infrastructure
+  become: true
+  gather_facts: true
+
+  roles:
+    - blackbox_exporter
