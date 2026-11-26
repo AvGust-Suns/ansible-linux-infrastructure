@@ -1,0 +1,8 @@
+---
+- name: Deploy Alertmanager
+  hosts: infrastructure
+  become: true
+  gather_facts: true
+
+  roles:
+    - alertmanager

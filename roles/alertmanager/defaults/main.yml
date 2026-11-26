@@ -1,0 +1,10 @@
+---
+alertmanager_package: prometheus-alertmanager
+alertmanager_service: prometheus-alertmanager
+
+alertmanager_config_path: /etc/prometheus/alertmanager.yml
+alertmanager_web_listen_address: 127.0.0.1:9093
+
+alertmanager_config_owner: prometheus
+alertmanager_config_group: prometheus
+alertmanager_config_mode: "0640"

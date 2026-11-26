@@ -1,0 +1,27 @@
+---
+- name: Update APT package cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install Alertmanager
+  ansible.builtin.apt:
+    name: "{{ alertmanager_package }}"
+    state: present
+
+- name: Deploy Alertmanager configuration
+  ansible.builtin.template:
+    src: alertmanager.yml.j2
+    dest: "{{ alertmanager_config_path }}"
+    owner: "{{ alertmanager_config_owner }}"
+    group: "{{ alertmanager_config_group }}"
+    mode: "{{ alertmanager_config_mode }}"
+    validate: >-
+      /usr/bin/amtool check-config %s
+  notify: Restart Alertmanager
+
+- name: Ensure Alertmanager is enabled and running
+  ansible.builtin.service:
+    name: "{{ alertmanager_service }}"
+    state: started
+    enabled: true
