@@ -16,6 +16,10 @@
       - /etc/nginx/sites-available/default
       - /etc/docker/daemon.json
       - /etc/prometheus/prometheus.yml
+      - /etc/prometheus/alertmanager.yml
+      - /etc/prometheus/blackbox.yml
+      - /etc/prometheus/rules/infrastructure-alerts.yml
+      - /etc/default/prometheus-blackbox-exporter
       - /etc/grafana/grafana.ini
       - /etc/grafana/provisioning/datasources/prometheus.yml
       - /etc/grafana/provisioning/dashboards/dashboards.yml

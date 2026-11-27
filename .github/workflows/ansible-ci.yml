@@ -39,6 +39,9 @@ jobs:
           ansible-playbook --syntax-check playbooks/backup-configs.yml
           ansible-playbook --syntax-check playbooks/restore-config.yml
           ansible-playbook --syntax-check playbooks/schedule-backups.yml
+          ansible-playbook --syntax-check playbooks/prometheus.yml
+          ansible-playbook --syntax-check playbooks/alertmanager.yml
+          ansible-playbook --syntax-check playbooks/blackbox-exporter.yml
 
       - name: Run Ansible Lint
         run: ansible-lint
